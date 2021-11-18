@@ -1,0 +1,3 @@
+rootProject.name = "OkraSdk"
+include ':app'
+include ':okra'
