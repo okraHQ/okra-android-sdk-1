@@ -2,12 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.okra.android">
 
-    <application>
+    <application android:hardwareAccelerated="true">
         <activity android:name=".activities.OkraMainActivity"></activity>
-        <activity
-            android:name=".activities.MainActivity"
-            android:label="@string/title_activity_main"
-            android:theme="@style/Theme.OkraSdk.NoActionBar" />
+<!--        <activity-->
+<!--            android:name=".activities.OkraMainActivity"-->
+<!--            android:label="@string/title_activity_main"-->
+<!--            android:theme="@style/Theme.OkraSdk.NoActionBar" />-->
     </application>
 
 </manifest>

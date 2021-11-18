@@ -6,24 +6,22 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
-import android.view.Window
-import android.view.WindowManager
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ProgressBar
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.okra.android.R
-import com.okra.android.`interface`.IOkraWebInterface
 import com.okra.android.R.id.ok_webview
 import com.okra.android.R.id.progressBar
+import com.okra.android.`interface`.IOkraWebInterface
 import com.okra.android.utils.OkraWebInterface
 
+//Handles all Okra operation
 class OkraMainActivity : AppCompatActivity(), IOkraWebInterface {
 
     companion object {
@@ -45,6 +43,8 @@ class OkraMainActivity : AppCompatActivity(), IOkraWebInterface {
         if(supportActionBar !=null)
             this.supportActionBar?.hide();
         setContentView(R.layout.activity_okra_main)
+
+        //This gets in the serialized string to send to the server
         val okraObject = intent.getStringExtra(OKRA_OBJECT) ?: throw IllegalStateException("Field $OKRA_OBJECT missing in Intent")
 
         intentForResult = Intent()
@@ -54,6 +54,7 @@ class OkraMainActivity : AppCompatActivity(), IOkraWebInterface {
         setupWebClient(okraObject)
     }
 
+    //Setup webviewclient.
     private fun setupWebClient(okraObject: String) {
         webView.webViewClient = object : WebViewClient(){
             override fun onPageFinished(view: WebView?, url: String?) {
@@ -68,6 +69,7 @@ class OkraMainActivity : AppCompatActivity(), IOkraWebInterface {
         }
     }
 
+    //Sets up webview
     @SuppressLint("SetJavaScriptEnabled")
     private fun setupWebView() {
         val webSettings = webView.settings
@@ -75,28 +77,31 @@ class OkraMainActivity : AppCompatActivity(), IOkraWebInterface {
         webSettings.domStorageEnabled = true
         webSettings.cacheMode = WebSettings.LOAD_NO_CACHE
         webView.addJavascriptInterface(OkraWebInterface(this), "Android")
-
         webView.loadUrl("https://mobile.okra.ng/")
     }
 
+    //This event gets called when a user carries out a successful operation.
     override fun onSuccess(json: String) {
         intentForResult.putExtra(OKRA_RESULT, json)
         setResult(Activity.RESULT_OK,intentForResult)
         finish()
     }
 
+    //This event gets called when a user encounters an error.
     override fun onError(json: String) {
         intentForResult.putExtra(OKRA_RESULT, json)
         setResult(Activity.RESULT_CANCELED,intentForResult)
         finish()
     }
 
+    //This event gets called when a user closes the okra modal
     override fun onClose(json: String) {
         intentForResult.putExtra(OKRA_RESULT, json)
         setResult(Activity.RESULT_CANCELED,intentForResult)
         finish()
     }
 
+    //This event gets called when a user exit the okra modal
     override fun exitModal(json: String) {
         intentForResult.putExtra(OKRA_RESULT, json)
         setResult(Activity.RESULT_CANCELED,intentForResult)
