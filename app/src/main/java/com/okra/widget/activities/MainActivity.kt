@@ -25,23 +25,19 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val b = findViewById<Button>(R.id.btn)
-        b.setOnClickListener {
+        val optionBtn = findViewById<Button>(R.id.btn)
+        optionBtn.setOnClickListener {
             //With option build
             val dummyOkraObject = DummyOkraObject("key","token", listOf("auth","balance","identity","income", "transactions"),"dev","Kaysho","android" )
-            val okraObject = object {
-                val key ="key"
-                val token = "token"
-                val products= listOf("auth","balance","identity","income", "transactions")
-                val env = "dev"
-                val name = "Kay"
-                val source = "android"
-            }
-
-            //With short-url
-            val shortUrlObject = DummyShortUrlObject("uOxqP-u9n")
-
             val intent = OkraMainActivity.newIntent(this, dummyOkraObject)
+            activityResultLauncher.launch(intent)
+        }
+
+        val shortBtn = findViewById<Button>(R.id.btn)
+        shortBtn.setOnClickListener {
+            //With short-url
+            val shortUrlObject = DummyShortUrlObject("uOxqP-u9n","android")
+            val intent = OkraMainActivity.newIntent(this, shortUrlObject)
             activityResultLauncher.launch(intent)
         }
     }
