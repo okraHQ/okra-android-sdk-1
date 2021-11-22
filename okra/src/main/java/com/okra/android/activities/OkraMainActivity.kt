@@ -1,24 +1,30 @@
 package com.okra.android.activities
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.telephony.TelephonyManager
 import android.view.KeyEvent
 import android.view.View
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import com.google.gson.Gson
 import com.okra.android.R
 import com.okra.android.R.id.ok_webview
 import com.okra.android.R.id.progressBar
 import com.okra.android.`interface`.IOkraWebInterface
+import com.okra.android.models.OkraOptions
 import com.okra.android.utils.OkraWebInterface
 
 //Handles all Okra operation
@@ -27,15 +33,16 @@ class OkraMainActivity : AppCompatActivity(), IOkraWebInterface {
     companion object {
         const val OKRA_OBJECT = "okraObject"
         const val OKRA_RESULT = "okraResult"
-        fun newIntent(context: Context, obj: Any): Intent {
+        fun newIntent(context: Context, okraOptions: OkraOptions): Intent {
             val intent = Intent(context, OkraMainActivity::class.java)
-            intent.putExtra(OKRA_OBJECT, Gson().toJson(obj))
+            intent.putExtra(OKRA_OBJECT, Gson().toJson(okraOptions))
             return intent
         }
     }
 
     private lateinit var intentForResult :Intent
     private lateinit var webView: WebView
+    private lateinit var telephonyManager: TelephonyManager
     private lateinit var okraProgressBar: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +52,14 @@ class OkraMainActivity : AppCompatActivity(), IOkraWebInterface {
         setContentView(R.layout.activity_okra_main)
 
         //This gets in the serialized string to send to the server
-        val okraObject = intent.getStringExtra(OKRA_OBJECT) ?: throw IllegalStateException("Field $OKRA_OBJECT missing in Intent")
+        val okraStringObject = intent.getStringExtra(OKRA_OBJECT) ?: throw IllegalStateException("Field $OKRA_OBJECT missing in Intent")
+        val okraModel = Gson().fromJson(okraStringObject, OkraOptions::class.java)
+        okraModel.also{
+            it.deviceInfo = getDeviceId()
+            it.source = "android"
+        }
+
+        val okraObject = Gson().toJson(okraModel)
 
         intentForResult = Intent()
         webView = findViewById(ok_webview)
@@ -101,6 +115,13 @@ class OkraMainActivity : AppCompatActivity(), IOkraWebInterface {
         finish()
     }
 
+    //This event gets called when onEvent function is triggered
+    override fun onEvent(json: String) {
+        intentForResult.putExtra(OKRA_RESULT, json)
+        setResult(Activity.RESULT_CANCELED,intentForResult)
+        finish()
+    }
+
     //This event gets called when a user exit the okra modal
     override fun exitModal(json: String) {
         intentForResult.putExtra(OKRA_RESULT, json)
@@ -127,5 +148,31 @@ class OkraMainActivity : AppCompatActivity(), IOkraWebInterface {
                 onClose("closed")
             }
             .create().show()
+    }
+
+    private fun getDeviceId() : String{
+        try {
+            telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+            if (ActivityCompat.checkSelfPermission(this@OkraMainActivity, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED)
+            {
+                ActivityCompat.requestPermissions(this@OkraMainActivity, arrayOf(Manifest.permission.READ_PHONE_STATE), 10)
+            }
+            else{
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    Toast.makeText(this,"imei " + telephonyManager.imei, Toast.LENGTH_SHORT).show()
+                    return telephonyManager.imei
+                } else {
+                    Toast.makeText(this, "deviceid " + telephonyManager.deviceId, Toast.LENGTH_SHORT).show()
+                    return telephonyManager.deviceId
+                }
+
+            }
+        }
+        catch (e:Exception){
+
+            return ""
+        }
+
+        return  ""
     }
 }

@@ -14,5 +14,8 @@ internal class OkraWebInterface(private val okraWebInterface: IOkraWebInterface)
     fun onClose(json : String) = okraWebInterface.onClose(json)
 
     @JavascriptInterface
+    fun onEvent(json : String) = okraWebInterface.onEvent(json)
+
+    @JavascriptInterface
     fun exitModal(json : String) = okraWebInterface.exitModal(json)
 }

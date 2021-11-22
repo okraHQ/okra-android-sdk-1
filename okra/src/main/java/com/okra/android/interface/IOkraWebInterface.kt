@@ -8,5 +8,7 @@ internal interface IOkraWebInterface {
 
     fun onClose(json : String)
 
+    fun onEvent(json : String)
+
     fun exitModal(json : String)
 }
