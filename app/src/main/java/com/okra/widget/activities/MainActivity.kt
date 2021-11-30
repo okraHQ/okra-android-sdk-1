@@ -7,8 +7,8 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.okra.android.activities.OkraMainActivity
-import com.okra.android.models.OkraOptions
 import com.okra.widget.R
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,7 +31,8 @@ class MainActivity : AppCompatActivity() {
         val optionBtn = findViewById<Button>(R.id.btn)
         optionBtn.setOnClickListener {
             //With option build
-            val okraOptions = OkraOptions("key","token", listOf("auth","balance","identity","income", "transactions"),"dev","Kaysho")
+            val okraOptions = CustomOkraOptions("key","token", listOf("auth","balance","identity","income", "transactions"),"dev","Kaysho")
+
             val intent = OkraMainActivity.newIntent(this, okraOptions)
             activityResultLauncher.launch(intent)
         }
@@ -39,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         val shortBtn = findViewById<Button>(R.id.btnShort)
         shortBtn.setOnClickListener {
             //With short-url
-            val okraOptionsShortUrl = OkraOptions("uOxqP-u9n")
+            val okraOptionsShortUrl = CustomOkraOptions("uOxqP-u9n")
             val intent = OkraMainActivity.newIntent(this, okraOptionsShortUrl)
             activityResultLauncher.launch(intent)
         }

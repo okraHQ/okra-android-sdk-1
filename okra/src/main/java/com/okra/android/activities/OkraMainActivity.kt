@@ -20,11 +20,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.gson.Gson
+import com.google.gson.internal.LinkedTreeMap
 import com.okra.android.R
 import com.okra.android.R.id.ok_webview
 import com.okra.android.R.id.progressBar
 import com.okra.android.`interface`.IOkraWebInterface
-import com.okra.android.models.OkraOptions
 import com.okra.android.utils.OkraWebInterface
 
 //Handles all Okra operation
@@ -33,7 +33,9 @@ class OkraMainActivity : AppCompatActivity(), IOkraWebInterface {
     companion object {
         const val OKRA_OBJECT = "okraObject"
         const val OKRA_RESULT = "okraResult"
-        fun newIntent(context: Context, okraOptions: OkraOptions): Intent {
+       private const val SOURCE = "source"
+       private const val DEVICE_INFO = "deviceInfo"
+        fun newIntent(context: Context, okraOptions: Any): Intent {
             val intent = Intent(context, OkraMainActivity::class.java)
             intent.putExtra(OKRA_OBJECT, Gson().toJson(okraOptions))
             return intent
@@ -49,23 +51,44 @@ class OkraMainActivity : AppCompatActivity(), IOkraWebInterface {
         super.onCreate(savedInstanceState)
         if(supportActionBar !=null)
             this.supportActionBar?.hide();
+
         setContentView(R.layout.activity_okra_main)
 
         //This gets in the serialized string to send to the server
         val okraStringObject = intent.getStringExtra(OKRA_OBJECT) ?: throw IllegalStateException("Field $OKRA_OBJECT missing in Intent")
-        val okraModel = Gson().fromJson(okraStringObject, OkraOptions::class.java)
-        okraModel.also{
-            it.deviceInfo = getDeviceId()
-            it.source = "android"
-        }
+        val okraModel = Gson().fromJson(okraStringObject, Any::class.java)
 
-        val okraObject = Gson().toJson(okraModel)
+        val convertObject = addCustomProperty(okraModel)
+
+        val okraObject = Gson().toJson(convertObject)
 
         intentForResult = Intent()
         webView = findViewById(ok_webview)
         setupWebView()
         okraProgressBar = findViewById(progressBar)
         setupWebClient(okraObject)
+    }
+
+    private fun addCustomProperty(okraModel: Any?): Any {
+
+        val editOkraObject = okraModel as LinkedTreeMap<String, Any>
+
+        if (editOkraObject.contains(SOURCE) && editOkraObject[SOURCE] == null && editOkraObject[SOURCE] == ""&& editOkraObject[SOURCE] != "android"){
+            editOkraObject[SOURCE] = getDeviceId()
+        }
+
+        if (!editOkraObject.contains(SOURCE)){
+            editOkraObject[SOURCE] = "android"
+        }
+
+        if (editOkraObject.contains(DEVICE_INFO) && editOkraObject[DEVICE_INFO] == null && editOkraObject[DEVICE_INFO] == ""){
+            editOkraObject[DEVICE_INFO] = getDeviceId()
+        }
+
+        if (!editOkraObject.contains(DEVICE_INFO)){
+            editOkraObject[DEVICE_INFO] = getDeviceId()
+        }
+       return editOkraObject
     }
 
     //Setup webviewclient.
