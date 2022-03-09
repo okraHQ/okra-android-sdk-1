@@ -1,5 +1,6 @@
 package com.okra.widget.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
@@ -16,11 +17,11 @@ class MainActivity : AppCompatActivity() {
         if (it.resultCode == RESULT_OK && it.data != null){
             val okraResult  = it.data!!.getStringExtra(OkraMainActivity.OKRA_RESULT)
             //Successful operation, get the data and do whatever you want with it.
-            Toast.makeText(this, okraResult, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, okraResult, Toast.LENGTH_LONG).show()
         }
         else{
             val okraResult  = it.data!!.getStringExtra(OkraMainActivity.OKRA_RESULT)
-            Toast.makeText(this, okraResult, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, okraResult, Toast.LENGTH_LONG).show()
         }
     })
 
@@ -30,19 +31,19 @@ class MainActivity : AppCompatActivity() {
 
         val optionBtn = findViewById<Button>(R.id.btn)
         optionBtn.setOnClickListener {
-            //With option build
-            val okraOptions = CustomOkraOptions("key","token", listOf("auth","balance","identity","income", "transactions"),"dev","Kaysho")
-
-            val intent = OkraMainActivity.newIntent(this, okraOptions)
-            activityResultLauncher.launch(intent)
+            val intent = Intent(this, OptionsActivity::class.java)
+            startActivity(intent)
         }
 
         val shortBtn = findViewById<Button>(R.id.btnShort)
         shortBtn.setOnClickListener {
             //With short-url
-            val okraOptionsShortUrl = CustomOkraOptions("uOxqP-u9n")
-            val intent = OkraMainActivity.newIntent(this, okraOptionsShortUrl)
-            activityResultLauncher.launch(intent)
+//            val okraOptionsShortUrl = CustomOkraOptions("uOxqP-u9n")
+//            val intent = OkraMainActivity.newIntent(this, okraOptionsShortUrl)
+//            activityResultLauncher.launch(intent)
+
+            val intent = Intent(this, ShortUrlActivity::class.java)
+            startActivity(intent)
         }
     }
 }
