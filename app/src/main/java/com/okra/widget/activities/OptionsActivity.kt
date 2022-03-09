@@ -41,11 +41,11 @@ class OptionsActivity : AppCompatActivity() {
         optionBtn.setOnClickListener {
             if (!key.text.isEmpty() && !token.text.isEmpty() && !env.text.isEmpty() && !name.text.isEmpty()){
                 val okraOptions = OkraOptions.Builder()
-                    .key("3f52ee9d-f081-55a7-a9d8-73d4b5878bd2")
-                    .token("5da6358130a943486f33dced")
+                    .key(key.text.toString())
+                    .token(token.text.toString())
                     .products(arrayOf("auth","balance","identity","income", "transactions"))
-                    .env("production")
-                    .name("Kaysho")
+                    .env(env.text.toString())
+                    .name(name.text.toString())
                     .build()
                 val intent = OkraMainActivity.newIntent(this, okraOptions)
                 activityResultLauncher.launch(intent)
