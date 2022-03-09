@@ -11,12 +11,4 @@ tools:context=".activities.OkraMainActivity">
     android:id="@+id/ok_webview"
     android:layout_width="match_parent" />
 
-<ProgressBar
-    android:id="@+id/progressBar"
-    android:max="3"
-    android:progress="100"
-    android:layout_gravity = "center"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content" />
-
 </FrameLayout>
