@@ -1,5 +1,6 @@
 package com.okra.widget.activities
 
+import android.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -17,10 +18,24 @@ class ShortUrlActivity : AppCompatActivity() {
         if (it.resultCode == RESULT_OK && it.data != null) {
             val okraResult = it.data!!.getStringExtra(OkraMainActivity.OKRA_RESULT)
             //Successful operation, get the data and do whatever you want with it.
-            Toast.makeText(this, okraResult, Toast.LENGTH_SHORT).show()
+            AlertDialog.Builder(this)
+                .setTitle("Successful")
+                .setMessage(okraResult)
+                .setNegativeButton("No", null)
+                .setPositiveButton("Yes") { dialogInterface, which ->
+                    //onClose("closed")
+                }
+                .create().show()
         } else {
             val okraResult = it.data!!.getStringExtra(OkraMainActivity.OKRA_RESULT)
-            Toast.makeText(this, okraResult, Toast.LENGTH_SHORT).show()
+            AlertDialog.Builder(this)
+                .setTitle("Error")
+                .setMessage(okraResult)
+                .setNegativeButton("No", null)
+                .setPositiveButton("Yes") { dialogInterface, which ->
+                    //onClose("closed")
+                }
+                .create().show()
         }
     }
 
@@ -33,8 +48,7 @@ class ShortUrlActivity : AppCompatActivity() {
         val optionBtn = findViewById<Button>(R.id.btn)
         optionBtn.setOnClickListener {
             if (!shorturl.text.isEmpty()){
-                val okraOptions = OkraOptions.Builder()
-                    .shortUrl(shorturl.text.toString())
+                val okraOptions = OkraOptions.ShortUrlBuilder(shorturl.text.toString())
                     .build()
 
                 val intent = OkraMainActivity.newIntent(this, okraOptions)

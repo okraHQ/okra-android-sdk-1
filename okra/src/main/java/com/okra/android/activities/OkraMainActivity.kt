@@ -21,6 +21,7 @@ import com.google.gson.internal.LinkedTreeMap
 import com.okra.android.R
 import com.okra.android.R.id.ok_webview
 import com.okra.android.`interface`.IOkraWebInterface
+import com.okra.android.models.OkraOptions
 import com.okra.android.utils.OkraWebInterface
 import java.util.*
 
@@ -30,30 +31,8 @@ class OkraMainActivity : AppCompatActivity(), IOkraWebInterface {
     companion object {
         const val OKRA_OBJECT = "okraObject"
         const val OKRA_RESULT = "okraResult"
-        private const val SOURCE = "source"
-        private const val LOGO = "logo"
-        private const val logoUrl = ""
-        private const val COLOR = "color"
-        private const val PAYMENT = "payment"
-        private const val FILTER = "filter"
-        private const val KEY = "key"
-        private const val ENV = "env"
-        private const val isCorporate = "isCorporate"
-        private const val TOKEN = "token"
-        private const val APPID = "app_id"
-        private const val LIMIT = "limit"
-        private const val Currency = "currency"
-        private const val WidgetSuccess = "widget_success"
-        private const val WidgetFailed = "widget_failed"
-        private const val CallbackUrl = "callback_url"
-        private const val ConnectMessage = "connectMessage"
-        private const val EXP = "exp"
-        private const val CHARGE = "charge"
-        private const val NAME = "name"
-        private const val PRODUCTS = "products"
-        private const val DEVICE_INFO = "deviceInfo"
 
-        fun newIntent(context: Context, okraOptions: Any): Intent {
+        fun newIntent(context: Context, okraOptions: OkraOptions): Intent {
             val intent = Intent(context, OkraMainActivity::class.java)
             intent.putExtra(OKRA_OBJECT, Gson().toJson(okraOptions))
             return intent
@@ -68,163 +47,30 @@ class OkraMainActivity : AppCompatActivity(), IOkraWebInterface {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (supportActionBar != null)
-            this.supportActionBar?.hide();
+            this.supportActionBar?.hide()
 
         setContentView(R.layout.activity_okra_main)
 
         //This gets in the serialized string to send to the server
         val okraStringObject = intent.getStringExtra(OKRA_OBJECT)
             ?: throw IllegalStateException("Field $OKRA_OBJECT missing in Intent")
-        val okraModel = Gson().fromJson(okraStringObject, Any::class.java)
+        val okraModel = Gson().fromJson(okraStringObject, OkraOptions::class.java)
 
-        val convertObject = addCustomProperty(okraModel)
+        if(okraModel.products != null){
+            okraModel.products.indices.forEach { i ->
+                okraModel.products[i] = "'${okraModel.products[i]}'"
+            }
+        }
 
-        val okraObject = Gson().toJson(convertObject)
 
         intentForResult = Intent()
         webView = findViewById(ok_webview)
         setupWebView(okraModel)
-        //setupWebClient(okraObject)
-    }
-
-    private fun addCustomProperty(okraModel: Any?): Any {
-
-        val editOkraObject = okraModel as LinkedTreeMap<String, Any>
-
-        if(editOkraObject.containsKey(PRODUCTS)){
-            val products = editOkraObject[PRODUCTS] as ArrayList<String>
-            for (i in products.indices)
-            {
-                products[i] = "'${products[i]}'"
-            }
-            editOkraObject[PRODUCTS] = products
-        }
-
-        if (editOkraObject.contains(SOURCE) && editOkraObject[SOURCE] == null && editOkraObject[SOURCE] == "" && editOkraObject[SOURCE] != "android") {
-            editOkraObject[SOURCE] = "android"
-        }
-
-        if (!editOkraObject.contains(SOURCE)) {
-            editOkraObject[SOURCE] = "android"
-        }
-
-        if (editOkraObject.contains(DEVICE_INFO) && editOkraObject[DEVICE_INFO] == null && editOkraObject[DEVICE_INFO] == "") {
-            editOkraObject[DEVICE_INFO] = getDeviceId()
-        }
-
-        if (!editOkraObject.contains(DEVICE_INFO)) {
-            editOkraObject[DEVICE_INFO] = getDeviceId()
-        }
-
-        if (editOkraObject.contains(LOGO) && editOkraObject[LOGO] == null && editOkraObject[LOGO] == "") {
-            editOkraObject[LOGO] = logoUrl
-        }
-
-        if (!editOkraObject.contains(LOGO)) {
-            editOkraObject[LOGO] = logoUrl
-        }
-
-        if (editOkraObject.contains(COLOR) && editOkraObject[COLOR] == null && editOkraObject[COLOR] == "") {
-            editOkraObject[COLOR] = "#3AB795"
-        }
-
-        if (!editOkraObject.contains(COLOR)) {
-            editOkraObject[COLOR] = "#3AB795"
-        }
-
-        if (editOkraObject.contains(PAYMENT) && editOkraObject[PAYMENT] == null && editOkraObject[PAYMENT] == "") {
-            editOkraObject[PAYMENT] = false
-        }
-
-        if (!editOkraObject.contains(PAYMENT)) {
-            editOkraObject[PAYMENT] = false
-        }
-        if (editOkraObject.contains(FILTER) && editOkraObject[FILTER] == null && editOkraObject[FILTER] == "") {
-            editOkraObject[FILTER] = listOf<String>()
-        }
-
-        if (!editOkraObject.contains(FILTER)) {
-            editOkraObject[FILTER] = listOf<String>()
-        }
-
-        if (editOkraObject.contains(Currency) && editOkraObject[Currency] == null && editOkraObject[Currency] == "") {
-            editOkraObject[Currency] = "NGN"
-        }
-
-        if (!editOkraObject.contains(Currency)) {
-            editOkraObject[Currency] = "NGN";
-        }
-
-        if (editOkraObject.contains(EXP) && editOkraObject[EXP] == null && editOkraObject[EXP] == "") {
-            editOkraObject[EXP] = Date()
-        }
-
-        if (!editOkraObject.contains(EXP)) {
-            editOkraObject[EXP] = Date()
-        }
-
-        if (editOkraObject.contains(ConnectMessage) && editOkraObject[ConnectMessage] == null && editOkraObject[ConnectMessage] == "") {
-            editOkraObject[ConnectMessage] = ""
-        }
-
-        if (!editOkraObject.contains(ConnectMessage)) {
-            editOkraObject[ConnectMessage] = ""
-        }
-
-        if (editOkraObject.contains(LIMIT) && editOkraObject[LIMIT] == null && editOkraObject[LIMIT] == "") {
-            editOkraObject[LIMIT] = 24
-        }
-
-        if (!editOkraObject.contains(LIMIT)) {
-            editOkraObject[LIMIT] = 24
-        }
-
-        if (editOkraObject.contains(WidgetSuccess) && editOkraObject[WidgetSuccess] == null && editOkraObject[WidgetSuccess] == "") {
-            editOkraObject[WidgetSuccess] = ""
-        }
-
-        if (!editOkraObject.contains(WidgetSuccess)) {
-            editOkraObject[WidgetSuccess] = ""
-        }
-
-        if (editOkraObject.contains(WidgetFailed) && editOkraObject[WidgetFailed] == null && editOkraObject[WidgetFailed] == "") {
-            editOkraObject[WidgetFailed] = ""
-        }
-
-        if (!editOkraObject.contains(WidgetFailed)) {
-            editOkraObject[WidgetFailed] = ""
-        }
-
-        if (editOkraObject.contains(CHARGE) && editOkraObject[CHARGE] == null && editOkraObject[CHARGE] == "") {
-            editOkraObject[CHARGE] = listOf<String>()
-        }
-
-        if (!editOkraObject.contains(CHARGE)) {
-            editOkraObject[CHARGE] = listOf<String>()
-        }
-
-        if (editOkraObject.contains(APPID) && editOkraObject[APPID] == null && editOkraObject[APPID] == "") {
-            editOkraObject[APPID] = null
-        }
-
-        if (!editOkraObject.contains(APPID)) {
-            editOkraObject[APPID] = null
-        }
-
-        if (editOkraObject.contains(isCorporate) && editOkraObject[isCorporate] == null && editOkraObject[isCorporate] == "") {
-            editOkraObject[isCorporate] = false
-        }
-
-        if (!editOkraObject.contains(isCorporate)) {
-            editOkraObject[isCorporate] = false
-        }
-
-        return editOkraObject
     }
 
     //Sets up webview
     @SuppressLint("SetJavaScriptEnabled")
-    private fun setupWebView(okraModel: Any) {
+    private fun setupWebView(okraModel: OkraOptions) {
         val webSettings = webView.settings
         webSettings.javaScriptEnabled = true
         webSettings.domStorageEnabled = true
@@ -235,18 +81,15 @@ class OkraMainActivity : AppCompatActivity(), IOkraWebInterface {
         webView.loadDataWithBaseURL(null, htmlToSend, "text/html", "utf-8", null)
     }
 
-    private fun getHtmlToSend(okraModel: Any): String {
-
-        val okraObject = okraModel as LinkedTreeMap<String, Any>
-
-        if (okraObject.containsKey("short_url") && okraObject["short_url"] != null && okraObject["short_url"] != "")
-            return getShortUrlHtml(okraObject["short_url"] as String)
+    private fun getHtmlToSend(okraModel: OkraOptions): String {
+        if (okraModel.short_url != null && okraModel.short_url != "")
+            return getShortUrlHtml(okraModel.short_url)
         else
-            return getOptionsHtml(okraObject)
+            return getOptionsHtml(okraModel)
 
     }
 
-    private fun getOptionsHtml(okraObject: LinkedTreeMap<String, Any>): String {
+    private fun getOptionsHtml(okraObject: OkraOptions): String {
 
         return "<!DOCTYPE html>\n" +
                 "<html lang=\"en\">\n" +
@@ -262,27 +105,27 @@ class OkraMainActivity : AppCompatActivity(), IOkraWebInterface {
                 "          window.onload = buildWithOptions; \n" +
                 "          function buildWithOptions(){ \n" +
                 "              Okra.buildWithOptions({\n" +
-                "                name: '${okraObject[NAME]}',\n" +
-                "                env: '${okraObject[ENV]}',\n" +
-                "                app_id: '${okraObject[APPID]}',\n" +
-                "                key: '${okraObject[KEY]}', \n" +
-                "                token: '${okraObject[TOKEN]}',  \n" +
-                "                payment:${okraObject[PAYMENT]},\n" +
-                "                isCorporate:${okraObject[isCorporate]},\n" +
-                "                logo:'${okraObject[LOGO]}',\n" +
-                "                callback_url:'${okraObject[CallbackUrl]}',\n" +
-                "                exp:'${okraObject[EXP]}',\n" +
-                "                connectMessage:'${okraObject[ConnectMessage]}',\n" +
-                "                widget_success:'${okraObject[WidgetSuccess]}',\n" +
-                "                widget_failed:'${okraObject[WidgetFailed]}',\n" +
-                "                currency:'${okraObject[Currency]}',\n" +
-                "                filter: ${okraObject[FILTER]},\n" +
+                "                name: '${okraObject.name}',\n" +
+                "                env: '${okraObject.env}',\n" +
+                "                app_id: '${okraObject.app_id}',\n" +
+                "                key: '${okraObject.key}', \n" +
+                "                token: '${okraObject.token}',  \n" +
+                "                payment:${okraObject.payment},\n" +
+                "                isCorporate:${okraObject.isCorporate},\n" +
+                "                logo:'${okraObject.logo}',\n" +
+                "                callback_url:'${okraObject.callback_url}',\n" +
+                "                exp:'${okraObject.exp}',\n" +
+                "                connectMessage:'${okraObject.connectMessage}',\n" +
+                "                widget_success:'${okraObject.widget_success}',\n" +
+                "                widget_failed:'${okraObject.widget_failed}',\n" +
+                "                currency:'${okraObject.currency}',\n" +
+                "                filter: ${okraObject.filter},\n" +
                 "                source: 'android',\n" +
-                "                color: '${okraObject[COLOR]}',\n" +
-                "                deviceInfo: '${okraObject[DEVICE_INFO]}',\n" +
-                "                limit: '${okraObject[LIMIT]}',\n" +
-                "                products: ${okraObject[PRODUCTS]},\n" +
-                "                charge:${okraObject[CHARGE]},\n" +
+                "                color: '${okraObject.color}',\n" +
+                "                deviceInfo: '${getDeviceId()}',\n" +
+                "                limit: ${okraObject.limit},\n" +
+                "                products: ${okraObject.products},\n" +
+                "                charge:${Gson().toJson(okraObject.charge)},\n" +
                 "                onSuccess: function(data){\n" +
                 "                      let response = {event:'option success', data}\n" +
                 "                      Android.onSuccess(JSON.stringify(data))\n" +
@@ -324,19 +167,19 @@ class OkraMainActivity : AppCompatActivity(), IOkraWebInterface {
                 "                        short_url: '${s}',\n" +
                 "                        onSuccess: function(data){\n" +
                 "                            let response = {event:'option success', data}\n" +
-                "                            Android.onSuccess(data)\n" +
+                "                            Android.onSuccess(JSON.stringify(data))\n" +
                 "                        },\n" +
                 "                        onClose: function(){\n" +
                 "                            let response = {event:'option close'}\n" +
-                "                            Android.onClose(response)\n" +
+                "                            Android.onClose(JSON.stringify(response))\n" +
                 "                        },\n" +
                 "                        BeforeClose: function(){\n" +
                 "                          let response = {event:'option before close'}\n" +
-                "                          Android.BeforeClose(response)\n" +
+                "                          Android.BeforeClose(JSON.stringify(response))\n" +
                 "                      },\n" +
                 "                      onError: function(data){\n" +
                 "                        let response = {event:'option error', data}\n" +
-                "                        Android.onError(data)\n" +
+                "                        Android.onError(JSON.stringify(data))\n" +
                 "                    }\n" +
                 "                    })\n" +
                 "                }\n" +

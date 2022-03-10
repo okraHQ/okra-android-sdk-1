@@ -61,8 +61,7 @@ dependencies {
     }
 
 
-    val okraOptions = OkraOptions.Builder()
-            .shortUrl("INSERT SHORT URL")
+    val okraOptions = OkraOptions.ShortUrlBuilder("INSERT SHORT URL")
             .build()
 
     val intent = OkraMainActivity.newIntent(this, okraOptions)
@@ -83,12 +82,13 @@ For options, just use
         }
     }
 
-    val okraOptions = OkraOptions.Builder()
-                    .key("INSERT KEY HERE")
-                    .token("INSERT TOKEN")
-                    .products(arrayOf("auth","balance","identity","income", "transactions"))
-                    .env("production")
-                    .name("INSERT NAME HERE")
+    val okraOptions = OkraOptions.OptionsBuilder("INSERT KEY HERE","INSERT TOKEN","INSERT ENV HERE","INSERT NAME HERE", "INSERT PRODUCTS HERE")
+                    //Add additional properties here.
+                    .appId("")
+                    .color("")
+                    .connectMessage("")
+                    .currency("")
+                    .isCorporate(true)
                     .build()
     val intent = OkraMainActivity.newIntent(this, okraOptions)
     activityResultLauncher.launch(intent)
