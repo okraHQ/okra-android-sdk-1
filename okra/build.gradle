@@ -67,7 +67,7 @@ publishing {
             version '1.0'
 
             // Set the artifact to be published
-            artifact("$buildDir/outputs/aar/okra-debug.aar")
+            artifact("$buildDir/outputs/aar/okra-release.aar")
 
             // Add any additional metadata you want to publish with your library
             pom {
