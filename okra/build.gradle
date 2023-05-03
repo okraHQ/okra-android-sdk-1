@@ -64,7 +64,7 @@ publishing {
         mavenAar(MavenPublication) {
             groupId 'com.github.okraHQ'
             artifactId 'okra-android-sdk-v1'
-            version '1.0'
+            version '1.2'
 
             // Set the artifact to be published
             artifact("$buildDir/outputs/aar/okra-release.aar")
