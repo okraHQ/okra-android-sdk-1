@@ -97,48 +97,47 @@ For options, just use
 ```
 ## Okra.buildWithOptions Options
 
-|Name                   | Type           | Required            | Default Value       | Description         |
-|-----------------------|----------------|---------------------|---------------------|---------------------|
-|  `app_id `            | `String`       | true                |                     | Your app id from your Okra Dashboard.
-|  `okraKey `               | `String`       | true                |                     | Your public key from your Okra Dashboard.
-|  `token `             | `String`       | true                |                     | Your token from your Okra Dashboard.
-|  `env `               | `String`       | false               |`production`         | production(live)/production-sandbox (test)
-|  `products`           | `Array`        | true                | `['Auth']`          | The Okra products you want to use with the widget.
-|  `payment`            | `Booelan`      | false               |                     | Whether you want to initiate a payment (https://docs.okra.ng/docs/payments)
-|  `charge `            | `Object`       | false               |                     | Payment charge opject (https://docs.okra.ng/docs/creating-a-charge)
-|  `products`           | `Array`        | true                | `['Auth']`          | The Okra products you want to use with the widget.
-|  `logo `              | `String(URL)`  | false               | Okra's Logo         |
-|  `name `              | `String`       | false               | Your Company's name | Name on the widget
-|  `color`              | `HEX   `       | false               | #3AB795             | Theme on the widget
-|  `limit`              | `Number`       | false               | 24                  | Statement length
-|  `filter`             | `Object`       | false               |                     | Filter for widget
-|  `isCorporate`        | `Boolen`       | false               | `false`             | Corporate or Individual account
-|  `connectMessage`     | `String`       | false               |                     | Instruction to connnect account
-|  `widget_success`     | `String`       | false               |                     | Widget Success Message
-|  `widget_failed`      | `String`       | false               |                     | Widget Failed Message
-|  `callback_url`       | `String(Url)`  | false               |                     |
-|  `currency`           | `String`       | false               | NGN                 | Wallet to bill
-|  `exp`                | `Date`         | false               | Won't expire        | Expirary date of widget
-|  `options`            | `Object`       | false               |                     | You can pass a object custom values eg id
-|  `onSuccess`          | `Function`     | false               |                     | Action to perform after widget is successful
-|  `onClose`            | `Function`     | false               |                     | Action to perform if widget is closed
-|  `onError`            | `Function`     | false               |                     | Action to perform on widget Error
-|  `BeforeClose`        | `Function`     | false               |                     | Action to perform before widget close
-|  `onEvent`            | `Function`     | false               |                     | Action to perform on widget event
-
+| Name             | Type          | Required | Default Value       | Description                                                                 |
+|------------------|---------------|----------|---------------------|-----------------------------------------------------------------------------|
+| `app_id `        | `String`      | true     |                     | Your app id from your Okra Dashboard.                                       |
+| `okraKey `       | `String`      | true     |                     | Your public key from your Okra Dashboard.                                   |
+| `token `         | `String`      | true     |                     | Your token from your Okra Dashboard.                                        |
+| `env `           | `String`      | false    | `production`        | production(live)/production-sandbox (test)                                  |
+| `products`       | `Array`       | true     | `['Auth']`          | The Okra products you want to use with the widget.                          |
+| `payment`        | `Booelan`     | false    |                     | Whether you want to initiate a payment (https://docs.okra.ng/docs/payments) |
+| `charge `        | `Object`      | false    |                     | Payment charge opject (https://docs.okra.ng/docs/creating-a-charge)         |
+| `products`       | `Array`       | true     | `['Auth']`          | The Okra products you want to use with the widget.                          |
+| `logo `          | `String(URL)` | false    | Okra's Logo         |                                                                             |
+| `name `          | `String`      | false    | Your Company's name | Name on the widget                                                          |
+| `color`          | `HEX   `      | false    | #3AB795             | Theme on the widget                                                         |
+| `limit`          | `Number`      | false    | 24                  | Statement length                                                            |
+| `filter`         | `Object`      | false    |                     | Filter for widget                                                           |
+| `isCorporate`    | `Boolen`      | false    | `false`             | Corporate or Individual account                                             |
+| `connectMessage` | `String`      | false    |                     | Instruction to connnect account                                             |
+| `widget_success` | `String`      | false    |                     | Widget Success Message                                                      |
+| `widget_failed`  | `String`      | false    |                     | Widget Failed Message                                                       |
+| `callback_url`   | `String(Url)` | false    |                     |                                                                             |
+| `currency`       | `String`      | false    | NGN                 | Wallet to bill                                                              |
+| `exp`            | `Date`        | false    | Won't expire        | Expirary date of widget                                                     |
+| `options`        | `Object`      | false    |                     | You can pass a object custom values eg id                                   |
+| `onSuccess`      | `Function`    | false    |                     | Action to perform after widget is successful                                |
+| `onClose`        | `Function`    | false    |                     | Action to perform if widget is closed                                       |
+| `onError`        | `Function`    | false    |                     | Action to perform on widget Error                                           |
+| `BeforeClose`    | `Function`    | false    |                     | Action to perform before widget close                                       |
+| `onEvent`        | `Function`    | false    |                     | Action to perform on widget event                                           |
 
 View a complete list of customizable options [here](https://docs.okra.ng/docs/widget-properties)
 
 ## Okra.buildWithShortUrl Options
 
-|Name                   | Type           | Required            | Description         |
-|-----------------------|----------------|---------------------|---------------------|
-|  `short_url`          | `String`       | true                | Your generated url from our [App builder](https://docs.okra.ng/docs/widget-customization).
-|  `onSuccess`          | `Function`     | false               | Action to perform after widget is successful
-|  `onClose`            | `Function`     | false               | Action to perform if widget is closed
-|  `onError`            | `Function`     | false               | Action to perform on widget Error
-|  `BeforeClose`        | `Function`     | false               | Action to perform before widget close
-|  `onEvent`            | `Function`     | false               |                     | Action to perform on widget event
+| Name          | Type       | Required | Description                                                                                |
+|---------------|------------|----------|--------------------------------------------------------------------------------------------|
+| `short_url`   | `String`   | true     | Your generated url from our [App builder](https://docs.okra.ng/docs/widget-customization). |
+| `onSuccess`   | `Function` | false    | Action to perform after widget is successful                                               |
+| `onClose`     | `Function` | false    | Action to perform if widget is closed                                                      |
+| `onError`     | `Function` | false    | Action to perform on widget Error                                                          |
+| `BeforeClose` | `Function` | false    | Action to perform before widget close                                                      |
+| `onEvent`     | `Function` | false    |                                                                                            | Action to perform on widget event
 
 ## Done connecting?
 Checkout our [API Overiview](https://docs.okra.ng/docs/api-overview) and see how to use the data you've received and [other products](https://docs.okra.ng/docs/selfie-verification) you can use to create more personalized experiences for your customers!

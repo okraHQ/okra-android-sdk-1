@@ -13,11 +13,10 @@ import android.telephony.TelephonyManager
 import android.view.KeyEvent
 import android.webkit.WebSettings
 import android.webkit.WebView
-import android.widget.ProgressBar
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.gson.Gson
-import com.google.gson.internal.LinkedTreeMap
 import com.okra.android.R
 import com.okra.android.R.id.ok_webview
 import com.okra.android.`interface`.IOkraWebInterface
@@ -42,7 +41,6 @@ class OkraMainActivity : AppCompatActivity(), IOkraWebInterface {
     private lateinit var intentForResult: Intent
     private lateinit var webView: WebView
     private lateinit var telephonyManager: TelephonyManager
-    private lateinit var okraProgressBar: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,9 +64,20 @@ class OkraMainActivity : AppCompatActivity(), IOkraWebInterface {
         intentForResult = Intent()
         webView = findViewById(ok_webview)
         setupWebView(okraModel)
+
+        onBackPressedDispatcher.addCallback(this /* lifecycle owner */) {
+            AlertDialog.Builder(this@OkraMainActivity)
+                .setTitle("Exit")
+                .setMessage("Are you sure?")
+                .setNegativeButton("No", null)
+                .setPositiveButton("Yes") { _, _ ->
+                    onClose("closed")
+                }
+                .create().show()
+        }
     }
 
-    //Sets up webview
+    //Sets up webView
     @SuppressLint("SetJavaScriptEnabled")
     private fun setupWebView(okraModel: OkraOptions) {
         val webSettings = webView.settings
@@ -82,10 +91,10 @@ class OkraMainActivity : AppCompatActivity(), IOkraWebInterface {
     }
 
     private fun getHtmlToSend(okraModel: OkraOptions): String {
-        if (okraModel.short_url != null && okraModel.short_url != "")
-            return getShortUrlHtml(okraModel.short_url)
+        return if (okraModel.short_url != null && okraModel.short_url != "")
+            getShortUrlHtml(okraModel.short_url)
         else
-            return getOptionsHtml(okraModel)
+            getOptionsHtml(okraModel)
 
     }
 
@@ -233,17 +242,7 @@ class OkraMainActivity : AppCompatActivity(), IOkraWebInterface {
         return super.onKeyDown(keyCode, event)
     }
 
-    override fun onBackPressed() {
-        AlertDialog.Builder(this)
-            .setTitle("Exit")
-            .setMessage("Are you sure?")
-            .setNegativeButton("No", null)
-            .setPositiveButton("Yes") { dialogInterface, which ->
-                onClose("closed")
-            }
-            .create().show()
-    }
-
+    @SuppressLint("HardwareIds")
     private fun getDeviceId(): String {
         try {
             telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
@@ -258,10 +257,10 @@ class OkraMainActivity : AppCompatActivity(), IOkraWebInterface {
                     10
                 )
             } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    return telephonyManager.imei
+                return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    telephonyManager.imei
                 } else {
-                    return telephonyManager.deviceId
+                    telephonyManager.deviceId
                 }
 
             }

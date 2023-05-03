@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 33
     buildToolsVersion "30.0.3"
 
     defaultConfig {
@@ -12,8 +12,8 @@ android {
             resolutionStrategy { force 'androidx.core:core-ktx:1.6.0' }
         }
         applicationId "com.okra.widget"
-        minSdkVersion 16
-        targetSdkVersion 30
+        minSdkVersion 17
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
 
@@ -33,21 +33,22 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    namespace 'com.okra.widget'
 }
 
 dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.appcompat:appcompat:1.3.1'
-    implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
-    //implementation project(path: ':okra')
-    testImplementation 'junit:junit:4.+'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation project(path: ':okra')
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    implementation 'com.google.code.gson:gson:2.8.9'
 
 
-    implementation files('/Users/sterlingp/AndroidStudioProjects/OkraSdk/okra/build/outputs/aar/okra-debug.aar')
+//    implementation files('/Users/sterlingp/AndroidStudioProjects/OkraSdk/okra/build/outputs/aar/okra-debug.aar')
 }
