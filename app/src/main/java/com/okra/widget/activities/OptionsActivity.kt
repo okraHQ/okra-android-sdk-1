@@ -62,7 +62,7 @@ class OptionsActivity : AppCompatActivity() {
                     .color("")
                     .connectMessage("")
                     .currency("")
-                    .isCorporate(true)
+                    .isCorporate(false)
                     .charge(Charge("hello", "yes", "Helpppppp", "NGN"))
                     .build()
                 val intent = OkraMainActivity.newIntent(this, okraOptions)

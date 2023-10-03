@@ -10,6 +10,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.telephony.TelephonyManager
+import android.util.Log
 import android.view.KeyEvent
 import android.webkit.WebSettings
 import android.webkit.WebView
@@ -23,6 +24,7 @@ import com.okra.android.`interface`.IOkraWebInterface
 import com.okra.android.models.OkraOptions
 import com.okra.android.utils.OkraWebInterface
 import java.util.*
+import kotlin.collections.HashMap
 
 //Handles all Okra operation
 class OkraMainActivity : AppCompatActivity(), IOkraWebInterface {
@@ -31,7 +33,7 @@ class OkraMainActivity : AppCompatActivity(), IOkraWebInterface {
         const val OKRA_OBJECT = "okraObject"
         const val OKRA_RESULT = "okraResult"
 
-        fun newIntent(context: Context, okraOptions: OkraOptions): Intent {
+        fun  newIntent(context: Context, okraOptions: OkraOptions): Intent {
             val intent = Intent(context, OkraMainActivity::class.java)
             intent.putExtra(OKRA_OBJECT, Gson().toJson(okraOptions))
             return intent
@@ -134,7 +136,16 @@ class OkraMainActivity : AppCompatActivity(), IOkraWebInterface {
                 "                deviceInfo: '${getDeviceId()}',\n" +
                 "                limit: ${okraObject.limit},\n" +
                 "                products: ${okraObject.products},\n" +
-                "                charge:${Gson().toJson(okraObject.charge)},\n" +
+                "                charge: ${Gson().toJson(okraObject.charge)},\n" +
+                "                meta: '${okraObject.meta}', \n" +
+                "                customer: ${getCustomerObject(okraObject)}, \n" +
+                "                options: ${Gson().toJson(okraObject.options)}, \n"+
+                "                reauth_account: '${okraObject.reAuthAccountNumber}',\n" +
+                "                reauth_bank: '${okraObject.reAuthBankSlug}',\n" +
+                "                onEvent: function(data){\n" +
+                "                      let response = {event:'option success', data}\n" +
+                "                      Android.onEvent(JSON.stringify(data))\n" +
+                "                  },\n" +
                 "                onSuccess: function(data){\n" +
                 "                      let response = {event:'option success', data}\n" +
                 "                      Android.onSuccess(JSON.stringify(data))\n" +
@@ -158,6 +169,31 @@ class OkraMainActivity : AppCompatActivity(), IOkraWebInterface {
                 "</html> "
     }
 
+    private fun getCustomerObject(okraOptions: OkraOptions): String {
+        val customerObj = HashMap<String, HashMap<String, String>>()
+
+        customerObj["id"] = hashMapOf("id" to (okraOptions.customerId ?: ""))
+        customerObj["bvn"] = hashMapOf("bvn" to (okraOptions.customerBvn ?: ""))
+        customerObj["phone"] = hashMapOf("phone" to (okraOptions.customerPhone ?: ""))
+        customerObj["email"] = hashMapOf("email" to (okraOptions.customerEmail ?: ""))
+        customerObj["nin"] = hashMapOf("nin" to (okraOptions.customerNin ?: ""))
+
+        var customer = HashMap<String, String>()
+        if (!okraOptions.customerId.isNullOrEmpty()) {
+            customer = customerObj["id"]!!
+        } else if (!okraOptions.customerBvn.isNullOrEmpty()) {
+            customer = customerObj["bvn"]!!
+        } else if (!okraOptions.customerPhone.isNullOrEmpty()) {
+            customer = customerObj["phone"]!!
+        } else if (!okraOptions.customerEmail.isNullOrEmpty()) {
+            customer = customerObj["email"]!!
+        } else if (!okraOptions.customerNin.isNullOrEmpty()) {
+            customer = customerObj["nin"]!!
+        }
+
+
+        return Gson().toJson(customer)
+    }
     private fun getShortUrlHtml(s: String): String {
         return "<!DOCTYPE html>\n" +
                 "      <html lang=\"en\">\n" +
@@ -174,6 +210,10 @@ class OkraMainActivity : AppCompatActivity(), IOkraWebInterface {
                 "                function buildWithShortUrl(){ \n" +
                 "                    Okra.buildWithShortUrl({\n" +
                 "                        short_url: '${s}',\n" +
+                "                        onEvent: function(data){\n" +
+                "                            let response = {event:'option success', data}\n" +
+                "                            Android.onEvent(JSON.stringify(data))\n" +
+                "                        },\n" +
                 "                        onSuccess: function(data){\n" +
                 "                            let response = {event:'option success', data}\n" +
                 "                            Android.onSuccess(JSON.stringify(data))\n" +
@@ -220,9 +260,10 @@ class OkraMainActivity : AppCompatActivity(), IOkraWebInterface {
 
     //This event gets called when onEvent function is triggered
     override fun onEvent(json: String) {
-        intentForResult.putExtra(OKRA_RESULT, json)
-        setResult(Activity.RESULT_CANCELED, intentForResult)
-        finish()
+//        intentForResult.putExtra(OKRA_RESULT, json)
+//        setResult(Activity.RESULT_CANCELED, intentForResult)
+//        finish()
+        Log.i("Okra:", json)
     }
 
     //This event gets called when a user exit the okra modal
