@@ -23,8 +23,16 @@ class OkraOptions private constructor(
     val widget_failed: String?= null,
     val callback_url: String?= null,
     val currency: String?= null,
-    val exp: Date?= null,
-    val options: Any?= null,
+    val exp: String?= null,
+    val meta: Any?= null,
+    val options: Map<String, Any>? = null,
+    val reAuthBankSlug: String? = null,
+    val reAuthAccountNumber: String? = null,
+    val customerId: String? = null,
+    val customerBvn: String? = null,
+    val customerNin: String? = null,
+    val customerPhone: String? = null,
+    val customerEmail: String? = null,
 ) {
 
     data class OptionsBuilder(
@@ -46,8 +54,16 @@ class OkraOptions private constructor(
         private var widgetFailed: String? = "",
         private var callbackurl: String? = "",
         private var currency: String? = "",
-        private var exp: Date? = Date(),
-        private var options: Any? = null,
+        private var exp: String? = "",
+        private var meta: Any? = null,
+        private var options: Map<String, Any>? = null,
+        private var reAuthAccountNumber: String? = "",
+        private var reAuthBankSlug: String? = "",
+        private var customerBvn: String? = "",
+        private var customerNin: String? = "",
+        private var customerId: String? = "",
+        private var customerEmail: String? = "",
+        private var customerPhone: String? = "",
     )
     {
 
@@ -64,8 +80,16 @@ class OkraOptions private constructor(
         fun widgetFailed(widgetFailed: String?) = apply { this.widgetFailed = widgetFailed }
         fun callbackUrl(callbackurl: String?) = apply { this.callbackurl = callbackurl }
         fun currency(currency: String?) = apply { this.currency = currency }
-        fun exp(exp: Date?) = apply { this.exp = exp }
-        fun options(options: Any?) = apply { this.options = options }
+        fun exp(exp: String?) = apply { this.exp = exp }
+        fun meta(meta: Any?) = apply { this.meta = meta }
+        fun options(options: Map<String, Any>?) = apply { this.options = options }
+        fun reAuthAccountNumber(reAuthAccountNumber: String?) = apply { this.reAuthAccountNumber = reAuthAccountNumber }
+        fun reAuthBankSlug(reAuthBankSlug: String?) = apply { this.reAuthBankSlug = reAuthBankSlug }
+        fun customerId(customerId: String?) = apply { this.customerId = customerId }
+        fun customerBvn(customerBvn: String?) = apply { this.customerBvn = customerBvn }
+        fun customerNin(customerNin: String?) = apply { this.customerNin = customerNin }
+        fun customerPhone(customerPhone: String?) = apply { this.customerPhone = customerPhone }
+        fun customerEmail(customerEmail: String?) = apply { this.customerEmail = customerEmail }
         fun build() = OkraOptions(
             key,
             appId,
@@ -87,7 +111,15 @@ class OkraOptions private constructor(
             callbackurl,
             currency,
             exp,
-            options
+            meta,
+            options,
+            reAuthAccountNumber,
+            reAuthBankSlug,
+            customerBvn,
+            customerId,
+            customerNin,
+            customerPhone,
+            customerEmail,
         )
 
 
